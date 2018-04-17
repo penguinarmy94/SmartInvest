@@ -1,0 +1,29 @@
+<!DOCTYPE>
+<html>
+<header>
+	<title>SmartInvest - Stock Calculator</title>
+</header>
+<body>
+	<h1 align="center" style="max-width:50%; margin-left:auto; margin-right:auto;">SmartInvest: Stock Calculator</h1>
+	<div style="max-width:50%; margin-left:auto; margin-right:auto;">
+		<form method="post" action="{% url 'stock_portfolio' %}">{% csrf_token %}
+			<label for="symbol">Symbol:</label> 
+				<br><input type="text" name="symbol" /><br>
+			<label for="allotment">Allotment:</label> 
+				<br><input type="text" name="allotment" /><br>
+			<label for="final_share_price">Final Share Price:</label> 
+				<br><input type="text" name="final_share_price" /><br>
+			<label for="sell_commission">Sell Commission:</label> 
+				<br><input type="text" name="sell_commission" /><br>
+			<label for="initial_share_price">Initial Share Price:</label> 
+				<br><input type="text" name="initial_share_price" /><br>
+			<label for="buy_commission">Buy Comission:</label> 
+				<br><input type="text" name="buy_commission" /><br>
+			<label for="capital_gain_tax_rate">Capital Gain Tax Rate:</label> 
+				<br><input type="text" name="capital_gain_tax_rate" /><br>
+			<!-- Sumbit button -->
+				<input type="submit" value="invest" />
+		</form>
+	</div>
+</body>
+</html>
