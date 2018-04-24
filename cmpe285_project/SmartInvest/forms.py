@@ -1,11 +1,11 @@
 from django import forms
 
 class StockCalculatorForm(forms.Form):
-	symbol = forms.CharField(max_length = 4)
-	allotmet = forms.IntegerField()
-	final_share_price = forms.IntegerField()
-	sell_commission = forms.IntegerField()
-	initial_share_price = forms.IntegerField()
-	buy_commission = forms.IntegerField()
-	capital_gain_tax_rate = forms.IntegerField()
+	symbol = forms.CharField()
+	allotment = forms.IntegerField(min_value=0)
+	final_share_price = forms.FloatField(min_value=0)
+	sell_commission = forms.FloatField(min_value=0)
+	initial_share_price = forms.FloatField(min_value=0)
+	buy_commission = forms.FloatField(min_value=0)
+	capital_gain_tax_rate = forms.FloatField(max_value=100, min_value=0)
 	
