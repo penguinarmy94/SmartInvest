@@ -1,29 +1,74 @@
 <!DOCTYPE>
 <html>
 <header>
+	{% load static %}
+	<link href="{% static '/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" id="bootstrap-css">
+	<script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
+	<!--<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>-->
+	<style> .h1 { margin-bottom: 0%; padding-bottom: 2%; padding-top: 2%; margin-left: auto; margin-right: auto; }</style>
 	<title>SmartInvest - Stock Calculator</title>
 </header>
-<body>
-	<h1 align="center" style="max-width:50%; margin-left:auto; margin-right:auto;">SmartInvest: Stock Calculator</h1>
-	<div style="max-width:50%; margin-left:auto; margin-right:auto;">
-		<form method="post" action="{% url 'stock_portfolio' %}">{% csrf_token %}
-			<label for="symbol">Symbol:</label> 
-				<br><input type="text" name="symbol" /><br>
-			<label for="allotment">Allotment:</label> 
-				<br><input type="text" name="allotment" /><br>
-			<label for="final_share_price">Final Share Price:</label> 
-				<br><input type="text" name="final_share_price" /><br>
-			<label for="sell_commission">Sell Commission:</label> 
-				<br><input type="text" name="sell_commission" /><br>
-			<label for="initial_share_price">Initial Share Price:</label> 
-				<br><input type="text" name="initial_share_price" /><br>
-			<label for="buy_commission">Buy Comission:</label> 
-				<br><input type="text" name="buy_commission" /><br>
-			<label for="capital_gain_tax_rate">Capital Gain Tax Rate:</label> 
-				<br><input type="text" name="capital_gain_tax_rate" /><br>
-			<!-- Sumbit button -->
-				<input type="submit" value="invest" />
-		</form>
+<body style="background-color: black">
+	<div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Stock Calculator</div>	
+	<div class="container-fluid">
+		<div class="row">
+		<div class="col-md-1" style="background-color: #00FF00"></div>
+		<div class="col-md-10" style="background-color: #00FFFF">
+			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
+			<div class="form-area">  
+				<form role="form" method="post" action="{% url 'stock_calculator' %}">{% csrf_token %}
+				<br style="clear:both">
+					<div class="form-group">
+						<input type="text" class="form-control" id="stock-symbol" name="symbol" placeholder="Symbol" required>
+						{% if form.symbol.errors %}
+						<div class="alert alert-danger"><strong>{{ form.symbol.errors }}</strong></div>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" id="stock-allotment" name="allotment" placeholder="Allotment (# of shares)" required>
+						{% if form.allotment.errors %}
+						<div class="alert alert-danger"><strong>{{ form.allotment.errors }}</strong></div>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" id="stock-fsp" name="final_share_price" placeholder="Final Share Price (dollars)" required>
+						{% if form.final_share_price.errors %}
+						<div class="alert alert-danger"><strong>{{ form.final_share_price.errors }}</strong></div>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" id="stock-sc" name="sell_commission" placeholder="Sell Commission (dollars)" required>
+						{% if form.sell_commission.errors %}
+						<div class="alert alert-danger"><strong>{{ form.sell_commission.errors }}</strong></div>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" id="stock-isp" name="initial_share_price" placeholder="Initial Share Price (dollars)" required>
+						{% if form.initial_share_price.errors %}
+						<div class="alert alert-danger"><strong>{{ form.initial_share_price.errors }}</strong></div>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" id="stock-bc" name="buy_commission" placeholder="Buy Commission (dollars)" required>
+						{% if form.buy_commission.errors %}
+						<div class="alert alert-danger"><strong>{{ form.buy_commission.errors }}</strong></div>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" id="stock-cgtr" name="capital_gain_tax_rate" placeholder="Capital Gain Tax Rate (%)" required>
+						{% if form.capital_gain_tax_rate.errors %}
+						<div class="alert alert-danger"><strong>{{ form.capital_gain_tax_rate.errors }}</strong></div>
+						{% endif %}
+					</div>
+					<input type="submit" id="calculate" name="calculate" class="btn btn-primary pull-right" value="Calculate"/>
+				<br style="clear:both">
+				<br style="clear:both">
+				</form>
+			</div>
+			</div>
+		</div>
+		<div class="col-md-1" style="background-color: #00FF00"></div>
+		</div>
 	</div>
 </body>
 </html>
