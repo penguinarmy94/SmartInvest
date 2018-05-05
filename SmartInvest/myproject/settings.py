@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap4',
     'stockapp',
     'accounts',
     'widget_tweaks',
@@ -131,3 +132,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# Settings for django-bootstrap4
+BOOTSTRAP4 = {
+    'error_css_class': 'bootstrap4-error',
+    'required_css_class': 'bootstrap4-required',
+    'javascript_in_head': False,
+    'include_jquery': False,
+}
