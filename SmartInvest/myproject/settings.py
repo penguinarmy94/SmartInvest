@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'stockapp',
     'accounts',
     'widget_tweaks',
+    'InvestMain'
 ]
 
 MIDDLEWARE = [
@@ -58,7 +59,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
+            os.path.join(BASE_DIR, 'templates'),
+	    os.path.join(BASE_DIR, 'InvestMain/html')
         ],
         'APP_DIRS': True,
         'OPTIONS': {

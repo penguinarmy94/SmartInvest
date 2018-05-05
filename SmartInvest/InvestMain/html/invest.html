@@ -1,0 +1,129 @@
+<!DOCTYPE>
+<html>
+<header>
+	<!--
+	{% load static %}
+	<link href="{% static '/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" id="bootstrap-css">
+	<script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
+	-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style> 
+		body {
+			height: 100%;
+			margin: 0
+		}
+		
+		.body-container {
+			background-image: url("http://www.bullmenrealty.com/news/wp-content/uploads/2017/09/save-money-invest-in-real-estate-compressor-e1486646407958-696x352.png");
+			background-repeat: no-repeat;
+			background-position: center;
+			height: 100%;
+			background-size: cover;
+			margin-top: 4%;
+		}
+	</style>
+	<title>SmartInvest - Invest</title>
+</header>
+<body>	
+	<nav class="navbar navbar-expand navbar-dark bg-dark fixed-top">
+		<a class="navbar-brand" href="/invest" style="color:#00f500">SmartInvest</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarButtons" aria-controls="navbarButtons" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarButtons">
+			<div class="navbar-nav">
+				<a class="nav-item nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+				<a class="nav-item nav-link active" href="#">Invest</a>
+				<a class="nav-item nav-link" href="#">Portfolio</a>
+				<a class="nav-item nav-link" href="#">About</a>
+			</div>
+			<div class="navbar-nav navbar-right">
+				
+		</div>
+	</nav>
+	<div class="container-fluid body-container">
+		<form method="post" action="invest">{% csrf_token %}
+		<div class="row" style="padding-top:2%;">
+			<div class="col-md-1"></div>
+			<div class="col-md-3">
+				<div class="card" style="width: 20rem; height: 100%;">
+					  <!--<img class="card-img-top" src="" alt="Card image cap">-->
+					<div class="card-body">
+						<h5 class="card-title"><b>Ethical Investment</b></h5>
+						<p class="card-text">{{ ethical }}</p>
+						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#ethical_invest">Add</button>
+						<input type="text" name="ethical_invest" class="collapse" id="ethical_invest" value="0"/>
+						
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card" style="width: 20rem; height: 100%">
+					  <!--<img class="card-img-top" src="" alt="Card image cap">-->
+					<div class="card-body">
+						<h5 class="card-title"><b>Growth Investment</b></h5>
+						<p class="card-text">{{ growth }}</p>
+						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#growth_invest">Add</button>
+						<input type="text" name="growth_invest" class="collapse" id="growth_invest" value="0"/>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card" style="width: 20rem; height: 100%;">
+					  <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+					<div class="card-body">
+						<h5 class="card-title"><b>Index Investment</b></h5>
+						<p class="card-text">{{ index }}</p>
+						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#index_invest">Add</button>
+						<input type="text" name="index_invest" class="collapse" id="index_invest" value="0"/>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+		<div class="row" style="margin-top: 2%">
+			<div class="col-md-1"></div>
+			<div class="col-md-3">
+				<div class="card" style="width: 20rem; height: 100%;">
+					  <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+					<div class="card-body">
+						<h5 class="card-title"><b>Quality Investment</b></h5>
+						<p class="card-text">{{ ethical }}</p>
+						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#quality_invest">Add</button>
+						<input type="text" name="quality_invest" class="collapse" id="quality_invest" value="0"/>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card" style="width: 20rem; height: 100%;">
+					  <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+					<div class="card-body">
+						<h5 class="card-title"><b>Value Investment</b></h5>
+						<p class="card-text">{{ growth }}</p>
+						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#value_invest">Add</button>
+						<input type="text" name="value_invest" class="collapse" id="value_invest" value="0"/>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card" style="width: 20rem; height: 100%;">
+					  <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+					  <div class="card-body">
+					    <p class="card-text">
+						<input type="submit" class="btn btn-primary" value="Invest" name="invest_btn" />
+					    </p>
+					  </div>
+				</div>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+		</form>
+	</div>
+</body>
+</html>
