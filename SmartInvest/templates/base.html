@@ -7,30 +7,14 @@
 {% block headertitle %} SmartInvest {% endblock %}
 {% block bootstrap4_content %}
   {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}" style="color:#00f500">SmartInvest</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'home' %}" style="color:#00f500">SmartInvest</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
         <div class="collapse navbar-collapse" id="mainMenu">
-          <div class="navbar-nav">
-            {% if user.is_authenticated %}
-              <a class="nav-item nav-link " href="#">Invest</a>
-              <a class="nav-item nav-link" href="#">Portfolio</a>
-              <a class="nav-item nav-link" href="#">About</a>
-            {% else %}
-              <form class="">
-                  <a href="{% url 'login' %}" class="nav-item nav-link">Log in</a>
-                  <a href="{% url 'signup' %}" class="nav-item nav-link">Sign up</a>
-              </form>
-            {% endif %}
-          </div>
-          <div class="navbar-nav navbar-right">
-            
-        </div>
-        <div class="collapse navbar-collapse" id="mainMenu">
-            {% if user.is_authenticated %}
+          {% if user.is_authenticated %}
             <ul class="navbar-nav ml-auto">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,15 +31,14 @@
                 </div>
               </li>
             </ul>
-            {% else %}
-            <form class="form-inline ml-auto">
-                <a href="{% url 'login' %}" class="btn btn-outline-secondary">Log in</a>
-              <a href="{% url 'signup' %}" class="btn btn-primary ml-2">Sign up</a>
+          {% else %}
+            <form class="form-inline my-2 my-lg-0 ml-auto">
+              <a href="{% url 'login' %}" class="btn my-12 my-sm-0 btn-outline-secondary" style="margin-right: 5px;">Log in</a>
+              <a href="{% url 'signup' %}" class="btn my-2 my-sm-0 btn-primary">Sign up</a>
             </form>
-            {% endif %}
-        </div>
+          {% endif %}
       </div>
-    </nav>
+  </nav> 
   {% endblock %}
   <div class="body-container">
     {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
