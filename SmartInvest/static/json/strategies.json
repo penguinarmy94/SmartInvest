@@ -1,0 +1,16 @@
+{
+	"strategies": {
+		"ethical": "Ethical Investing is based on investing in companies that are ethical in their beliefs and those believes align with yours. Invest in this strategy to invest in companies based on these factors.",
+		"growth": "Growth Investing is based on investing in companies based on most recently on upward growing trends. Invest in this strategy if you want to go with companies recently on the rise.",
+		"index": "Index Investing is based on some form of index that do something in terms of index and are only meant to be defined. Invest in this option if you are interested.",
+		"quality": "Quality Investing is based on investing in companies that exhibit high quality and follow quality standards. Invest in this if you are interested.",
+		"value": "Value Investing is based on investing in stocks where it seems like their value is under what it is really worth. Invest in this if you are interested in undervalued stocks."
+	},
+	"stocks": {
+		"ethical_invest": ["GOOG", "ADBE", "NKE"],
+		"growth_invest": ["NFLX", "IMAX", "SFM"],
+		"index_invest": ["XLF", "USO", "SLV"],
+		"quality_invest": ["ENS", "CVG", "EME"],
+		"value_invest": ["CCJ", "TEF", "ETE"]
+	}
+}
