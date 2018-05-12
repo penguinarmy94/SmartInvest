@@ -3,128 +3,121 @@
 {% load static %}
 
 {% block content %}
+<br /> 
 <br />
-<br />
-	<div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Stock Calculator Results</div>	
-	<div class="container-fluid">
-		<div class="row">
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		<div class="col-md-10" style="background-color: #00FFFF">
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-			<div class="container">
-				<br style="clear:both">
-				<br style="clear:both">
-				<table class="table table-hover table-striped js-table">
-				<tr><td colspan="2"><div class="h5">Proceeds: </div></td></tr>
-				<tr><td colspan="2"><div class="h6">${{ message.proceeds }}</div></td></tr>
-				<tr><td colspan="2"><div class="h5">Cost: </div></td></tr>
-				<tr><td colspan="2"><div class="h6">{{ message.allotment }}</div></td></tr>
-				<tr><td colspan="2"><div class="h5">Cost Details:</div></td></tr>
+<div class="container-fluid">
+	<div class="row" style="margin-top: 2%">
+		<div class ="col-md-8 col-md-offset-2" style="margin: 0 auto">
+		<table class="table table-striped" style="background-color: white">
+			<tr>
+				<th scope="column">Strategy</th>
+				<th scope="column">Stocks</th>
+				<th scope="column">Num of Stocks</th>
+			</tr>
+			{% for val in strategies %}
 				<tr>
-					<td>
-						<div class="h5">
-							Total Purchase Price: <br>
-							({{ message.allotment }} x ${{ message.initial_share_price }})<br>
-							Buy Commission: <br>
-							Sell Commission: <br>
-							Tax on Capital Gain: <br>
-							({{ message.capital_gain_tax_rate }}% of ${{ message.capital_gain }})
-						</div>
-					</td>
-					<td>
-						<div class="h6">
-							${{ message.total_purchase_price }}<br>
-							${{ message.buy_commission }}<br>
-							${{ message.sell_commission }}<br>
-							${{ message.capital_gain_tax }}<br>
-						</div>
-					</td>
+				<td>{{ val }}</td>
+				<td>{{ stocks.forloop.counter }}</td>
+				<td>{{ stock_count.0 }}</td>
 				</tr>
-				<tr><td colspan="2"><div class="h5">Net Profit: </div></td></tr>
-				<tr><td colspan="2"><div class="h6">${{ message.net_profit }}</div></td></tr>
-				<tr><td colspan="2"><div class="h5">Break Even Price: </div></td></tr>
-				<tr><td colspan="2"><div class="h6">${{ message.break_even_price }}</div></td></tr>
-				</table>
-				<br style="clear:both">
-				<form method="get" action="{% url 'stock_calculator' %}">
-				<input class="btn btn-primary btn-lg" type="submit" value="Return"/>
-				</form>
-				<br style="clear:both">
-				<br style="clear:both">
-			</div>
-			</div>
-		</div>
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		</div>
+			{% endfor %}
+		</table>
+		</div>		
 	</div>
-	<div class="container-fluid" style="height:5%"><div class="row"><div class="col-md-12"></div></div></div>
+	<div class="row" style="margin-top: 2%">
+		<div id="pie" class="col-md-8 col-md-offset-2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+	</div>
+	<div class="row" style="margin-top: 2%">
+		<div id="histo" class="col-md-8 col-md-offset-2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+	</div>
+	<span id="chart_data" style="visibility: hidden;">{{ data }}</span>	
+</div>
+
+
+<script type="text/javascript">
+  $(function() {
+    renderPieChart(stocks, pie_title);
+    renderHistogram(values, bar_title, strategies)
+  });
+  
+  var dt = document.getElementById("chart_data").innerHTML;
+  var message = JSON.parse(dt);
+  
+  var stocks = message.pie_data; 
+  var pie_title = message.pie_title;
+  
+  var strategies = message.strategies;
+  var bar_title = message.histo_title;
+  var values = message.histo_data;
+  
+   
+	function renderPieChart(stocks, pie_title){
+	       Highcharts.chart('pie', {
+		    chart: {
+			plotBackgroundColor: null,
+			plotBorderWidth: null,
+			plotShadow: false,
+			type: 'pie'
+		    },
+		    title: {
+			text: pie_title
+		    },
+		    tooltip: {
+			pointFormat: '{series.name}: <b>${point.y:.2f}</b>'
+		    },
+		    plotOptions: {
+			pie: {
+			    allowPointSelect: true,
+			    cursor: 'pointer',
+			    dataLabels: {
+				enabled: false
+			    },
+			    showInLegend: true
+			}
+		    },
+		    series: [{
+			name: 'Stock',
+			colorByPoint: true,
+			data: stocks
+		    }]
+		});
+	    }
+	    
+	function renderHistogram(values, bar_title, strategies) {
+		Highcharts.chart('histo', {
+		    chart: {
+			type: 'column'
+		    },
+		    title: {
+			text: bar_title
+		    },
+		    xAxis: {
+			categories: strategies,
+			crosshair: true
+		    },
+		    yAxis: {
+			min: 0,
+			title: {
+			    text: 'price($)'
+			}
+		    },
+		    tooltip: {
+			headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+			pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+			    '<td style="padding:0"><b>${point.y:.2f}</b></td></tr>',
+			footerFormat: '</table>',
+			shared: true,
+			useHTML: true
+		    },
+		    plotOptions: {
+			column: {
+			    pointPadding: 0.2,
+			    borderWidth: 0
+			}
+		    },
+		    series: values
+		});
+	}
+</script>
 
 {% endblock %}
-
-
-<!-- <!DOCTYPE>
-<html>
-<header>
-	{% load static %}
-	<link href="{% static '/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" id="bootstrap-css">
-	<script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
-	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-	<style> .h1 { margin-bottom: 0%; padding-bottom: 2%; padding-top: 2%; margin-left: auto; margin-right: auto; } </style>
-	<title>SmartInvest - Stock Calculator Results</title>
-</header>
-<body style="background-color: black">
-	<div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Stock Calculator Results</div>	
-	<div class="container-fluid">
-		<div class="row">
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		<div class="col-md-10" style="background-color: #00FFFF">
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-			<div class="container">
-				<br style="clear:both">
-				<br style="clear:both">
-				<table class="table table-hover table-striped js-table">
-				<tr><td colspan="2"><div class="h5">Proceeds: </div></td></tr>
-				<tr><td colspan="2"><div class="h6">${{ message.proceeds }}</div></td></tr>
-				<tr><td colspan="2"><div class="h5">Cost: </div></td></tr>
-				<tr><td colspan="2"><div class="h6">{{ message.allotment }}</div></td></tr>
-				<tr><td colspan="2"><div class="h5">Cost Details:</div></td></tr>
-				<tr>
-					<td>
-						<div class="h5">
-							Total Purchase Price: <br>
-							({{ message.allotment }} x ${{ message.initial_share_price }})<br>
-							Buy Commission: <br>
-							Sell Commission: <br>
-							Tax on Capital Gain: <br>
-							({{ message.capital_gain_tax_rate }}% of ${{ message.capital_gain }})
-						</div>
-					</td>
-					<td>
-						<div class="h6">
-							${{ message.total_purchase_price }}<br>
-							${{ message.buy_commission }}<br>
-							${{ message.sell_commission }}<br>
-							${{ message.capital_gain_tax }}<br>
-						</div>
-					</td>
-				</tr>
-				<tr><td colspan="2"><div class="h5">Net Profit: </div></td></tr>
-				<tr><td colspan="2"><div class="h6">${{ message.net_profit }}</div></td></tr>
-				<tr><td colspan="2"><div class="h5">Break Even Price: </div></td></tr>
-				<tr><td colspan="2"><div class="h6">${{ message.break_even_price }}</div></td></tr>
-				</table>
-				<br style="clear:both">
-				<form method="get" action="{% url 'stock_calculator' %}">
-				<input class="btn btn-primary btn-lg" type="submit" value="Return"/>
-				</form>
-				<br style="clear:both">
-				<br style="clear:both">
-			</div>
-			</div>
-		</div>
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		</div>
-	</div>
-	<div class="container-fluid" style="height:5%"><div class="row"><div class="col-md-12"></div></div></div>
-</body>
-</html> -->
