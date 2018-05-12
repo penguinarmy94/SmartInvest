@@ -15,11 +15,21 @@
 				<th scope="column">Num of Stocks</th>
 			</tr>
 			{% for val in strategies %}
+				{% with count=forloop.counter %}
 				<tr>
-				<td>{{ val }}</td>
-				<td>{{ stocks.forloop.counter }}</td>
-				<td>{{ stock_count.0 }}</td>
+					<td>{{ val }}</td>
+					<td>
+					{{ stock.count.0 }}<br>
+					{{ stock.count.1 }}<br>
+					{{ stock.count.2 }}<br>
+					</td>
+					<td>
+					{{ stock_count.count.0 }}<br>
+					{{ stock_count.count.1 }}<br>
+					{{ stock_count.count.2 }}<br>
+					</td>
 				</tr>
+				{% endwith %}
 			{% endfor %}
 		</table>
 		</div>		
