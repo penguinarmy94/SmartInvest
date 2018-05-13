@@ -27,6 +27,20 @@
 		background-size: cover;
 	}
 	</style>
+	<script type="text/javascript">
+	  window.strategies = {};
+	  $(function() {
+	    $.ajax({
+	      dataType: "json",
+	      url:'/static/json/strategies.json',
+	      data: {},
+	      success: (data)=>{
+	        window.strategies = data||{};
+	        window.loadedStrategies && loadedStrategies(strategies);
+	      }
+	    });
+	  });
+	</script>
 {% endblock %}
 {% block bootstrap4_before_content %}
 <!-- <script src="https://code.highcharts.com/highcharts.js"></script>

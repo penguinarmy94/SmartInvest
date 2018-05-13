@@ -9,119 +9,139 @@
 {% block content %}
   <br /> <br /> <br /> <br />
 <div class="container">
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="trendsSelect">Trends</label>
+    </div>
+    <select class="custom-select" id="trendsSelect">
+      <option >Choose...</option>
+      <option value="ethical_invest" selected>Ethical Invest</option>
+      <option value="growth_invest">Growth Invest</option>
+      <option value="index_invest">Index Invest</option>
+      <option value="quality_invest">Quality Invest</option>
+      <option value="value_invest">Value Invest</option>
+    </select>
+  </div>
   <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
   </div>
 
 
 <script type="text/javascript">
-  $(function() {
-    //renderColumnChart(series,categories);
-    renderStockGraph(data, 'Apple');
-  });
-    var data = [
-      [1147651200000,67.79],
-      [1147737600000,64.98],
-      [1147824000000,65.26],
-      [1147910400000,63.18],
-      [1147996800000,64.51],
-      [1148256000000,63.38],
-      [1148342400000,63.15],
-      [1148428800000,63.34],
-      [1148515200000,64.33],
-      [1148601600000,63.55],
-      [1148947200000,61.22],
-      [1149033600000,59.77],
-    ];
-    var series =[{
-      name: 'Tokyo',
-      data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
 
-    }, {
-      name: 'New York',
-      data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
-
-    }, {
-      name: 'London',
-      data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
-
-    }, {
-      name: 'Berlin',
-      data: [42.4, 33.2, 34.5, 39.7, 52.6, 75.5, 57.4, 60.4, 47.6, 39.1, 46.8, 51.1]
-
-    }];
-    var categories =[
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec'
-      ];
-    function renderColumnChart(series,categories){
-        Highcharts.chart('container', {
-          chart: {
-            type: 'column'
-          },
-          title: {
-            text: 'Monthly Average Rainfall'
-          },
-          subtitle: {
-            text: 'Source: WorldClimate.com'
-          },
-          xAxis: {
-            categories: categories,
-            crosshair: true
-          },
-          yAxis: {
-            min: 0,
-            title: {
-              text: 'Rainfall (mm)'
+  function startPage(){
+    var stocks = window.strategies.stocks;
+    getStockData(stocks.ethical_invest,5, (data)=>{
+      var seriesOptions = [],
+          seriesCounter = 0,
+          stocksNames = Object.keys(data);
+      stocksNames.forEach((name,i)=>{
+        var x = parseStockData(name,data);
+        seriesOptions[i] = {
+          name: x.companyName,
+          data: x.data
+        };
+      })
+      createChart(seriesOptions)
+    })
+  }
+  function getStockData(symbols=[], last=5, onSuccess){
+    const stockBaseUrl = 'https://api.iextrading.com/1.0';
+      if(symbols && symbols.length){
+        $.ajax({
+            dataType: 'json',
+            url: stockBaseUrl + '/stock/market/batch?symbols='+symbols.join(',')+'&types=quote,chart&range=1m&last='+last,
+            data: {},
+            success: (data)=>{
+              onSuccess && onSuccess(data);
             }
-          },
-          tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-              '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-          },
-          plotOptions: {
-            column: {
-              pointPadding: 0.2,
-              borderWidth: 0
-            }
-          },
-          series: series
-        });
-    }
-    function renderStockGraph(data, stock){
-      Highcharts.stockChart('container', {
-      rangeSelector: {
-        selected: 1
-      },
-      title: {
-        text: stock + ' Stock Price'
-      },
-      series: [{
-        name: stock + 'Stock Price',
-        data: data,
-        marker: {
-          enabled: true,
-          radius: 3
+          });
+      }
+  }
+  function createChart(seriesOptions) {
+
+    Highcharts.stockChart('container', {
+
+        rangeSelector: {
+            selected: 4
         },
-        shadow: true,
+
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                }
+            },
+            plotLines: [{
+                value: 0,
+                width: 2,
+                color: 'silver'
+            }]
+        },
+
+        plotOptions: {
+            series: {
+                compare: 'percent',
+                showInNavigator: true
+            }
+        },
+
         tooltip: {
-          valueDecimals: 2
-        }
-      }]
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+            valueDecimals: 2,
+            split: true
+        },
+
+        series: seriesOptions
     });
+    hideHighChartExtras();
+}
+  function renderStockGraph(data, title=''){
+    
+      Highcharts.stockChart('container', {
+        rangeSelector: {
+          selected: 1
+        },
+        title: {
+          text: title
+        },
+        series: [{
+          name: title,
+          data: data,
+          marker: {
+            enabled: true,
+            radius: 3
+          },
+          shadow: true,
+          tooltip: {
+            valueDecimals: 2
+          }
+        }]
+      });
+      hideHighChartExtras();
+  }
+  function hideHighChartExtras(){
+    $('.highcharts-label').hide();
+      $('.highcharts-range-selector-group').hide();
+      $('.highcharts-xaxis-labels').hide();
+      $('.highcharts-navigator').hide();
+      $('.highcharts-scrollbar').hide();
+  }
+  function parseStockData(symbol='', data={}, take=5){
+    if(!data[symbol]){
+      return []
+    }
+    return {
+      'symbol': data[symbol].quote.symbol,
+      'companyName':data[symbol].quote.companyName,
+      'data': data[symbol].chart
+          .map(x=>([x.date,x.close||x.open]))
+          .splice(0,take)};
+  }
+  if(window.strategies.stocks){
+    startPage();
+  }
+  function loadedStrategies(strategies){
+      startPage()
   }
 </script>
 
