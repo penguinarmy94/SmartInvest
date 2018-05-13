@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block stylesheet %}
+  <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+{% endblock %}
+
+{% block content %}
+  <br /> <br /> <br /> <br />
+<div class="container">
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="trendsSelect">Trends</label>
+    </div>
+    <select class="custom-select" id="trendsSelect">
+      <option >Choose...</option>
+      <option value="ethical_invest" selected>Ethical Invest</option>
+      <option value="growth_invest">Growth Invest</option>
+      <option value="index_invest">Index Invest</option>
+      <option value="quality_invest">Quality Invest</option>
+      <option value="value_invest">Value Invest</option>
+    </select>
+  </div>
+  <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+  </div>
+
+
+<script type="text/javascript">
+  
+  $( "#trendsSelect" ).change(function(e) {
+    var trend = e.currentTarget.value ||'';
+    renderTrendGraph(trend)
+  });
+
+  function renderTrendGraph(trend='ethical_invest'){
+    var stocks = window.strategies.stocks;
+    getStockData(stocks[trend],5, (data)=>{
+      var seriesOptions = [],
+          seriesCounter = 0,
+          stocksNames = Object.keys(data);
+      stocksNames.forEach((name,i)=>{
+        var x = parseStockData(name,data);
+        seriesOptions[i] = {
+          name: x.companyName,
+          data: x.data
+        };
+      })
+      createChart(seriesOptions)
+    })
+  }
+  function getStockData(symbols=[], last=5, onSuccess){
+    const stockBaseUrl = 'https://api.iextrading.com/1.0';
+      if(symbols && symbols.length){
+        $.ajax({
+            dataType: 'json',
+            url: stockBaseUrl + '/stock/market/batch?symbols='+symbols.join(',')+'&types=quote,chart&range=1m&last='+last,
+            data: {},
+            success: (data)=>{
+              onSuccess && onSuccess(data);
+            }
+          });
+      }
+  }
+  function createChart(seriesOptions) {
+
+    Highcharts.stockChart('container', {
+
+        rangeSelector: {
+            selected: 4
+        },
+
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                }
+            },
+            plotLines: [{
+                value: 0,
+                width: 2,
+                color: 'silver'
+            }]
+        },
+
+        plotOptions: {
+            series: {
+                compare: 'percent',
+                showInNavigator: true
+            }
+        },
+
+        tooltip: {
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+            valueDecimals: 2,
+            split: true
+        },
+
+        series: seriesOptions
+    });
+    hideHighChartExtras();
+}
+  function renderStockGraph(data, title=''){
+    
+      Highcharts.stockChart('container', {
+        rangeSelector: {
+          selected: 1
+        },
+        title: {
+          text: title
+        },
+        series: [{
+          name: title,
+          data: data,
+          marker: {
+            enabled: true,
+            radius: 3
+          },
+          shadow: true,
+          tooltip: {
+            valueDecimals: 2
+          }
+        }]
+      });
+      hideHighChartExtras();
+  }
+  function hideHighChartExtras(){
+    $('.highcharts-label').hide();
+      $('.highcharts-range-selector-group').hide();
+      $('.highcharts-xaxis-labels').hide();
+      $('.highcharts-navigator').hide();
+      $('.highcharts-scrollbar').hide();
+  }
+  function parseStockData(symbol='', data={}, take=5){
+    if(!data[symbol]){
+      return []
+    }
+    return {
+      'symbol': data[symbol].quote.symbol,
+      'companyName':data[symbol].quote.companyName,
+      'data': data[symbol].chart
+          .map(x=>([x.date,x.close||x.open]))
+          .splice(0,take)};
+  }
+  if(window.strategies.stocks){
+    renderTrendGraph();
+  }
+  function loadedStrategies(strategies){
+    renderTrendGraph()
+  }
+</script>
+
+{% endblock %}
