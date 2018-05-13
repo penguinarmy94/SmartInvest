@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^login/$', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
     url(r'^admin/', admin.site.urls),
+    url(r'^trends/', views.trends, 'trends'),
     path('', include('InvestMain.urls')),
     
 ]
