@@ -27,10 +27,15 @@
 
 
 <script type="text/javascript">
+  
+  $( "#trendsSelect" ).change(function(e) {
+    var trend = e.currentTarget.value ||'';
+    renderTrendGraph(trend)
+  });
 
-  function startPage(){
+  function renderTrendGraph(trend='ethical_invest'){
     var stocks = window.strategies.stocks;
-    getStockData(stocks.ethical_invest,5, (data)=>{
+    getStockData(stocks[trend],5, (data)=>{
       var seriesOptions = [],
           seriesCounter = 0,
           stocksNames = Object.keys(data);
@@ -138,10 +143,10 @@
           .splice(0,take)};
   }
   if(window.strategies.stocks){
-    startPage();
+    renderTrendGraph();
   }
   function loadedStrategies(strategies){
-      startPage()
+    renderTrendGraph()
   }
 </script>
 
