@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
     url(r'^admin/', admin.site.urls),
     url(r'^trends/', views.trends, name='trends'),
+    url(r'^about/', views.about, name='about'),
+    url(r'^team/', views.team, name='team'),
     path('', include('InvestMain.urls')),
     
 ]
