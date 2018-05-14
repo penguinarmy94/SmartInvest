@@ -10,9 +10,9 @@ class StockCalculatorForm(forms.Form):
 	capital_gain_tax_rate = forms.FloatField(max_value=100, min_value=0)
 
 class InvestmentForm(forms.Form):
-	ethical_invest = forms.FloatField()
-	growth_invest = forms.FloatField()
-	index_invest = forms.FloatField()
-	quality_invest = forms.FloatField()
-	value_invest = forms.FloatField()
+	ethical_invest = forms.FloatField(required=True)
+	growth_invest = forms.FloatField(required=True)
+	index_invest = forms.FloatField(required=True)
+	quality_invest = forms.FloatField(required=True)
+	value_invest = forms.FloatField(required=True)
 	
