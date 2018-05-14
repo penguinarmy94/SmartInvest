@@ -43,7 +43,7 @@ def stock_portfolio(request):
 				gain = stock_list[strategy.lookup][0].price * strategy.number_of_stocks_1
 				name = stock_list[strategy.lookup][0].name + "(" + stock_list[strategy.lookup][0].symbol + ")"
 				stock_list[strategy.lookup][0].allotment = strategy.number_of_stocks_1
-				stock_price.append(gain)
+				stock_price.append(stock_list[strategy.lookup][0].price)
 				stock_info.append({"name": name, "y": gain})
 				stock_names.append(name)
 				
@@ -51,7 +51,7 @@ def stock_portfolio(request):
 				gain = stock_list[strategy.lookup][1].price * strategy.number_of_stocks_2
 				name = stock_list[strategy.lookup][1].name + "(" + stock_list[strategy.lookup][1].symbol + ")"
 				stock_list[strategy.lookup][1].allotment = strategy.number_of_stocks_2
-				stock_price.append(gain)
+				stock_price.append(stock_list[strategy.lookup][1].price)
 				stock_info.append({"name": name, "y": gain})
 				stock_names.append(name)
 					
@@ -59,7 +59,7 @@ def stock_portfolio(request):
 				gain = stock_list[strategy.lookup][2].price * strategy.number_of_stocks_2
 				name = stock_list[strategy.lookup][2].name + "(" + stock_list[strategy.lookup][2].symbol + ")"
 				stock_list[strategy.lookup][2].allotment = strategy.number_of_stocks_2
-				stock_price.append(gain)
+				stock_price.append(stock_list[strategy.lookup][2].price)
 				stock_info.append({"name": name, "y": gain})
 				stock_names.append(name)
 				
@@ -203,7 +203,7 @@ def portfolio_trend(request):
 					
 				return render(request, 'stock.html', {"strategies": strategies, "stocks": stocks, "stock_num": stock_count})
 			except ObjectDoesNotExist:
-			return redirect("/")
+				return redirect("/")
 			
 		# Route other requests to home
 		else:
