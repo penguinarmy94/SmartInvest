@@ -14,23 +14,24 @@
 				<th scope="column">Stocks</th>
 				<th scope="column">Num of Stocks</th>
 			</tr>
-			{% for val in strategies %}
-				{% with count=forloop.counter %}
+			{% for key,val in stocks.items %}
 				<tr>
-					<td>{{ val }}</td>
-					<td>
-					{{ stock.count.0 }}<br>
-					{{ stock.count.1 }}<br>
-					{{ stock.count.2 }}<br>
-					</td>
-					<td>
-					{{ stock_count.count.0 }}<br>
-					{{ stock_count.count.1 }}<br>
-					{{ stock_count.count.2 }}<br>
-					</td>
+				<td>
+					{{ val.3 }}
+				</td>
+				<td>
+					{{ val.0.name }} ( {{ val.0.symbol }} )<br>
+					{{ val.1.name }} ( {{ val.1.symbol }} )<br>
+					{{ val.2.name }} ( {{ val.2.symbol }} )
+				</td>
+				<td>
+					{{ val.0.allotment }}<br>
+					{{ val.1.allotment }}<br>
+					{{ val.2.allotment }}
+				</td>
 				</tr>
-				{% endwith %}
 			{% endfor %}
+				
 		</table>
 		</div>		
 	</div>
@@ -40,7 +41,13 @@
 	<div class="row" style="margin-top: 2%">
 		<div id="histo" class="col-md-8 col-md-offset-2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 	</div>
-	<span id="chart_data" style="visibility: hidden;">{{ data }}</span>	
+	<span id="chart_data" style="visibility: hidden;">{{ js }}</span>
+	{% if status == 0 %}
+	<span id="updated" style="visibility: hidden;"></span>
+	{% endif %}
+	{% if status == 1 %}
+	<span id="created" style="visibility: hidden;"></span>
+	{% endif %}
 </div>
 
 
@@ -48,17 +55,25 @@
   $(function() {
     renderPieChart(stocks, pie_title);
     renderHistogram(values, bar_title, strategies)
+    
+    if (document.getElementById("updated")) {
+	window.alert("Stock Portfolio Updated")
+    }
+    if(document.getElementById("created")) {
+	window.alert("Stock Portfolio Updated")
+    }
+  
   });
   
   var dt = document.getElementById("chart_data").innerHTML;
-  var message = JSON.parse(dt);
+  var js = JSON.parse(dt);
   
-  var stocks = message.pie_data; 
-  var pie_title = message.pie_title;
+  var stocks = js.pie_data; 
+  var pie_title = js.pie_title;
   
-  var strategies = message.strategies;
-  var bar_title = message.histo_title;
-  var values = message.histo_data;
+  var strategies = js.strategies;
+  var bar_title = js.histo_title;
+  var values = js.histo_data;
   
    
 	function renderPieChart(stocks, pie_title){
@@ -80,9 +95,9 @@
 			    allowPointSelect: true,
 			    cursor: 'pointer',
 			    dataLabels: {
-				enabled: false
+				enabled: true
 			    },
-			    showInLegend: true
+			    showInLegend: false
 			}
 		    },
 		    series: [{
@@ -96,14 +111,14 @@
 	function renderHistogram(values, bar_title, strategies) {
 		Highcharts.chart('histo', {
 		    chart: {
-			type: 'column'
+			type: 'bar'
 		    },
 		    title: {
 			text: bar_title
 		    },
 		    xAxis: {
 			categories: strategies,
-			crosshair: true
+			crosshair: false,
 		    },
 		    yAxis: {
 			min: 0,
@@ -126,6 +141,7 @@
 			}
 		    },
 		    series: values
+
 		});
 	}
 </script>

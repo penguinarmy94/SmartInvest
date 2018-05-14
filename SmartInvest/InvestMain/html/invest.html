@@ -16,7 +16,7 @@
 						<h5 class="card-title"><b>Ethical Investment</b></h5>
 						<p class="card-text">{{ ethical }}</p>
 						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#ethical_invest">Add</button>
-						<input type="text" name="ethical_invest" class="collapse" id="ethical_invest" value="0"/>
+						<br><br><input type="text" name="ethical_invest" class="collapse" id="ethical_invest" value="0"/>
 						
 					</div>
 				</div>
@@ -28,7 +28,7 @@
 						<h5 class="card-title"><b>Growth Investment</b></h5>
 						<p class="card-text">{{ growth }}</p>
 						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#growth_invest">Add</button>
-						<input type="text" name="growth_invest" class="collapse" id="growth_invest" value="0"/>
+						<br><br><input type="text" name="growth_invest" class="collapse" id="growth_invest" value="0"/>
 					</div>
 				</div>
 			</div>
@@ -39,7 +39,7 @@
 						<h5 class="card-title"><b>Index Investment</b></h5>
 						<p class="card-text">{{ index }}</p>
 						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#index_invest">Add</button>
-						<input type="text" name="index_invest" class="collapse" id="index_invest" value="0"/>
+						<br><br><input type="text" name="index_invest" class="collapse" id="index_invest" value="0"/>
 					</div>
 				</div>
 			</div>
@@ -54,7 +54,7 @@
 						<h5 class="card-title"><b>Quality Investment</b></h5>
 						<p class="card-text">{{ quality }}</p>
 						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#quality_invest">Add</button>
-						<input type="text" name="quality_invest" class="collapse" id="quality_invest" value="0"/>
+						<br><br><input type="text" name="quality_invest" class="collapse" id="quality_invest" value="0"/>
 					</div>
 				</div>
 			</div>
@@ -65,7 +65,7 @@
 						<h5 class="card-title"><b>Value Investment</b></h5>
 						<p class="card-text">{{ value }}</p>
 						<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#value_invest">Add</button>
-						<input type="text" name="value_invest" class="collapse" id="value_invest" value="0"/>
+						<br><br><input type="text" name="value_invest" class="collapse" id="value_invest" value="0"/>
 					</div>
 				</div>
 			</div>
@@ -74,7 +74,7 @@
 					  <!--<img class="card-img-top" src="..." alt="Card image cap">-->
 					  <div class="card-body">
 					    <p class="card-text">
-						<input type="submit" class="btn btn-primary" value="Invest" name="invest_btn" />
+						<center><input type="submit" class="btn btn-primary" value="Invest" name="invest_btn" /></center>
 					    </p>
 					  </div>
 				</div>
@@ -82,6 +82,15 @@
 			<div class="col-md-1"></div>
 		</div>
 		</form>
+		{% if status %}
+		<span id="alert" style="visibility: hidden;">{{ alert }}</span>
+		{% endif %}
 	</div>
-
+	<script type="text/javascript">
+		$(function(){
+			if(document.getElementById("alert")){
+				window.alert(document.getElementById("alert").innerHTML);
+			}
+		});
+	</script>
 {% endblock %}
