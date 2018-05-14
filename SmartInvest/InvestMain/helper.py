@@ -9,6 +9,9 @@ __stocks = __strategy_json["stocks"]
 __apihost = "https://api.iextrading.com/1.0/stock"
 __apihost_extension = "/realtime-update"
 
+""" 
+	Calculates the total amount of investment
+"""
 def calc_total_invest(data):
 	money = 0;
 	if(data["ethical_invest"] > 0):
@@ -24,9 +27,15 @@ def calc_total_invest(data):
 	
 	return money
 
+"""
+	Gets the list of all strategies as strings
+"""
 def get_strategy_list():
 	return ["Ethical Investment", "Growth Investment", "Index Investment", "Quality Investment", "Value Investment"]
-	
+
+"""
+	Gets all strategies user wants to invest in as Strategy objects
+"""	
 def get_strategies(data, user):
 	strategies = []
 	
@@ -78,6 +87,9 @@ def get_strategies(data, user):
 	
 	return strategies
 
+"""
+	Gets all of the stock names belonging to a strategy (as strings)
+"""
 def get_stocks(strategy):
 	stocks = []
 	strat_name = ""
@@ -104,6 +116,9 @@ def get_stocks(strategy):
 		
 	return stocks
 
+"""
+	Updates the strategies that the user has already invested in
+"""
 def update_strategies(stored, strategies):
 	for i in stored:
 		for j in strategies:
@@ -121,7 +136,10 @@ def update_strategies(stored, strategies):
 				break
 		if not bool:
 			i.save()
-			
+
+"""
+	Splits the amount of money to invest into the stocks in the investment strategy
+"""			
 def __invest(amount, stocks):
 	count = 0
 	index = 0
@@ -146,48 +164,9 @@ def __invest(amount, stocks):
 	
 	return stocks
 	
-		
-def invest_division(data, strategies, stocks, apihost, apihost_extension):
-	st_count = 0
-	stock_count = {}
-	
-	"""
-	for stock_set in stocks:
-		val = strategies[st_count]
-		money = data[val]
-		num_of_stock = []
-		stock_data = []
-		count = 0
-		
-		for stock in stock_set:
-			stock_data.append(fetch_data_api(apihost, apihost_extension, stock))
-			num_of_stock.append(0)
-			count = count + 1
-			
-		no_more_stocks = 0
-		i = 0
-		while i < len(stock_data):
-			if (stock_data[i]["close"] <= money):
-				num_of_stock[i] = num_of_stock[i] + 1;
-				no_more_stock = 0
-				money -= stock_data[i]["close"]
-			else:
-				no_more_stocks = no_more_stocks + 1
-		
-			if(i == len(stock_data)-1):
-		
-				if (money == 0 or no_more_stocks >= len(stock_data)):
-					break
-				else:
-					i = -1
-			i += 1
-		stock_count[val] = num_of_stock
-		st_count += 1
-	
-	return stock_count
-	"""
-
-	
+"""
+	Checks if a network connection is available
+"""	
 def check_network():
 
     try:
@@ -248,7 +227,9 @@ def calc_percent_change(before, after):
     else:
         return str("{:.2f}".format(((after - before) / before)*100.0))
 
-
+"""
+	Provides the current data and time
+"""
 def date_time():
 	date = datetime.datetime.now()
 	tz = time.strftime("%Z")
