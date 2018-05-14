@@ -32,6 +32,26 @@
 				</tr>
 			{% endfor %}
 			<tr>
+				<th scope="column" colspan="3">Division of money into stocks</th>
+			</tr>
+			<tr>
+				<td colspan = "3">
+					Round Robin (Until money runs out)<br>
+					Ex.) $5000 -> stocks: stock1 = $1000 stock2 = $500 stock3 = $2000<br>
+					Round Robin 1:<br>
+					stock1 + 1<br>
+					$5000 - $1000 = $4000<br>
+					stock2 + 1<br>
+					$4000 - $500 = $3500<br>
+					stock3 + 1<br>
+					$3500 - $2000 = $1500<br>
+					Round Robin 2:<br>
+					stock1 + 1<br>
+					$1500 - $1000 = $500<br>
+					stock2 + 1<br>
+					$500 - $500 = $0<br>
+					Stocks: stock1 = 2 shares stock2 = 2 shares stock3 = 1 share
+				</td>
 			</tr>
 				
 		</table>
