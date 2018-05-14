@@ -16,126 +16,103 @@ apihost_extension = "/realtime-update"
 	Loads the results from the stock calculator view
 """
 def stock_portfolio(request):
-	if request.method == "GET" and request.user.is_authenticated:						
-			if strategies <= 0:
-				print("No Investment")
-				return redirect("/")
+	if request.method == "GET" and request.user.is_authenticated:	
+
+		try:
+			stored = Strategy.objects.filter(userid = request.user)
+			stock_list = {}
+			stock_price = []
+			stock_info = []
+			stock_names = []
+			js = {}
 			
+			js["histo_day"] = []
+			for strategy in stored:
+				stock_list[strategy.lookup] = get_stocks(strategy) 
+				stock_list[strategy.lookup].append(strategy.name)
 			
-			data_stocks = {}
-			data_array = []
-			detail_array = []
-			categories = []
+			for strategy in stored:
+				gain = stock_list[strategy.lookup][0].price * strategy.number_of_stocks_1
+				name = stock_list[strategy.lookup][0].name + "(" + stock_list[strategy.lookup][0].symbol + ")"
+				stock_list[strategy.lookup][0].allotment = strategy.number_of_stocks_1
+				stock_price.append(gain)
+				stock_info.append({"name": name, "y": gain})
+				stock_names.append(name)
+				
+				gain = stock_list[strategy.lookup][1].price * strategy.number_of_stocks_2
+				name = stock_list[strategy.lookup][1].name + "(" + stock_list[strategy.lookup][1].symbol + ")"
+				stock_list[strategy.lookup][1].allotment = strategy.number_of_stocks_2
+				stock_price.append(gain)
+				stock_info.append({"name": name, "y": gain})
+				stock_names.append(name)
+								
+				gain = stock_list[strategy.lookup][2].price * strategy.number_of_stocks_2
+				name = stock_list[strategy.lookup][2].name + "(" + stock_list[strategy.lookup][2].symbol + ")"
+				stock_list[strategy.lookup][2].allotment = strategy.number_of_stocks_2
+				stock_price.append(gain)
+				stock_info.append({"name": name, "y": gain})
+				stock_names.append(name)
+				
 			
+			js["histo_title"] = "Current Stock Values - " + date_time()
+			js["strategies"] = stock_names
+			js["pie_title"] = "Stock Portfolio - " + date_time()
+			js["histo_data"] = [{"name": "Stock Price", "data": stock_price}]
+			js["pie_data"] = stock_info
 			
-			count = 0
-			for stock_set in stocks:
-				temp = []
-				strategy = strategies[count]
-				for i in range(len(stock_set)):
-					
-					value = stock_count[strategy][i]
-					details = fetch_data_api(apihost, apihost_extension, stock_set[i])
-					price = value*details["latestPrice"]
-					name = details["companyName"] + "(" + stock_set[i] + ")"
-					temp.append(price)
-					categories.append(name)
-					detail_array.append({"name": name, "y": price })
-					data_array.append(details["latestPrice"])
-				count += 1
-			
-			series = [{"name": "Stock Price", "data": data_array}]
-			data_stocks["histo_data"] = series
-			data_stocks["pie_data"] = detail_array
-			data_stocks["histo_title"] = "Current Stock Values - " + date_time()
-			data_stocks["pie_title"] = "Stock Portfolio - " + date_time()
-			data_stocks["strategies"] = categories
-			
-			stock_count_array = []
-			
-			for key in stock_count:
-				stock_count_array.append(stock_count[key])
-			
-			print(stock_count_array)
-			return render(request, 'portfolio.html', {"data": json.dumps(data_stocks), "strategies": strategies, "stocks": stocks, "stock_count": stock_count_array, "length": len(strategies)})
-		
-		return render(request, 'portfolio.html', { "data":  data})
+			pattern = request.GET.get('status', '')
+			if pattern == 'updated':
+				return render(request, 'portfolio.html', { "status": 0, "stocks": stock_list, "js": json.dumps(js)})
+			elif pattern == 'created':
+				return render(request, 'portfolio.html', { "created": 1, "stocks": stock_list, "js": json.dumps(js)})
+			else:
+				return render(request, 'portfolio.html', { "status": 2, "stocks": stock_list, "js": json.dumps(js)})
+		except ObjectDoesNotExist:
+			return redirect("/")
 	else:
 		return redirect("/")
 	
 
 def stock_invest_options(request):
 	file = open(os.path.join(settings.BASE_DIR,'static/json/strategies.json'))
-	strategy_json = json.load(file)
-	strats = strategy_json["strategies"]
+	invest_info = json.load(file)
+	strats = invest_info["strategies"]
 	
-	if request.method == "GET" and request.user.is_authenticated:		
-		return render(request, 'invest.html', strats)
-	else:
-		return redirect("/")
+	if request.user.is_authenticated:
+	
+		if request.method == "GET":
+			return render(request, 'invest.html', strats)
+			
+		elif request.method == "POST":
+			investment = InvestmentForm(request.POST or None)
 		
-	if request.method == "POST" and request.user.is_authenticated:		
-		investment = InvestmentForm(request.POST or None)
-		
-		if investment.is_valid():
-			data = investment.cleaned_data
-			total_money = calc_total_invest(data)
+			if investment.is_valid():
+				data = investment.cleaned_data
+				total_money = calc_total_invest(data)
 						
-			if total_money < 5000:
-				print("Amount is less than $5000. Must invest a total of $5000")
-				return render(request, 'invest.html', strats)
-			
-			
-			strategies = get_strategies(data)	
-			
-			stocks = []
-			
-			for val in strategies:
-				stocks.append(all_stocks_to_invest(data,val))
-			
-			stock_count = invest_division(data, strategies, stocks, apihost, apihost_extension)
-			
-			data_stocks = {}
-			data_array = []
-			detail_array = []
-			categories = []
-			
-			
-			count = 0
-			for stock_set in stocks:
-				temp = []
-				strategy = strategies[count]
-				for i in range(len(stock_set)):
+				if total_money < 5000:
+					strats["alert"] = "Total amount of investment needs to be greater than $5000"
+					strats["status"] = True
+					return render(request, 'invest.html', strats)
+				else:
+					strategies = get_strategies(data, request.user)
 					
-					value = stock_count[strategy][i]
-					details = fetch_data_api(apihost, apihost_extension, stock_set[i])
-					price = value*details["latestPrice"]
-					name = details["companyName"] + "(" + stock_set[i] + ")"
-					temp.append(price)
-					categories.append(name)
-					detail_array.append({"name": name, "y": price })
-					data_array.append(details["latestPrice"])
-				count += 1
-			
-			series = [{"name": "Stock Price", "data": data_array}]
-			data_stocks["histo_data"] = series
-			data_stocks["pie_data"] = detail_array
-			data_stocks["histo_title"] = "Current Stock Values - " + date_time()
-			data_stocks["pie_title"] = "Stock Portfolio - " + date_time()
-			data_stocks["strategies"] = categories
-			
-			stock_count_array = []
-			
-			for key in stock_count:
-				stock_count_array.append(stock_count[key])
-			
-			print(stock_count_array)
-			return render(request, 'portfolio.html', {"data": json.dumps(data_stocks), "strategies": strategies, "stocks": stocks, "stock_count": stock_count_array, "length": len(strategies)})
-
-			
+					try:
+						stored = Strategy.objects.filter(userid = request.user)
+						update_strategies(stored, strategies)
+						return redirect("/portfolio?status=updated")
+						
+					except ObjectDoesNotExist:
+						for i in strategies:
+							i.save()
+						
+						return redirect("/portfolio?status=created")
+			else:
+				strats["alert"] = "Fields cannoot be left blank"
+				strats["status"] = True
+				return render(request, 'invest.html', strats) 
 		else:
-			return redirect(stock_portfolio)
-				
+			return redirect("/")
 	else:
 		return redirect("/")
 		
@@ -158,6 +135,3 @@ def portfolio_trend(request):
 	}
 	
 	return render(request, 'invest.html', {"strategies": strategies, "stocks": stocks, "stock_num": stock_count})
-
-def test_route(request):
-	return redirect("/")
