@@ -3,100 +3,21 @@
 {% load static %}
 
 {% block content %}
-<br />
-<br />
-<div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Portfolio Weekly Trend</div>	
-	<div class="container-fluid">
-		<div class="row">
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		<div class="col-md-10" style="background-color: #00FFFF">
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-				{{ strategies }}
-			</div>
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-				{{ stocks }}
-			</div>
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-				{{ stock_num }}
-			</div>
-		</div>
-		</div>
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		</div>
-	</div>
+  <br /> <br /> <br /> <br />
+  <div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Portfolio Weekly Trend</div>	
+<div class="container">
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="trendsSelect">Trends</label>
+    </div>
+    <select class="custom-select" id="trendsSelect">
+      <option >Choose...</option>
+      {% for option in strategies %}
+      	<option value="{{ forloop.counter0 }}">{{option}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+  </div>
 
 {% endblock %}
-<!-- 
-<!DOCTYPE>
-<html>
-<header>
-	{% load static %}
-	<link href="{% static '/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" id="bootstrap-css">
-	<script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
-	<style> .h1 { margin-bottom: 0%; padding-bottom: 2%; padding-top: 2%; margin-left: auto; margin-right: auto; }</style>
-	<title>SmartInvest - Stock Calculator</title>
-</header>
-<body style="background-color: black">
-	<div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Stock Calculator</div>	
-	<div class="container-fluid">
-		<div class="row">
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		<div class="col-md-10" style="background-color: #00FFFF">
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-			<div class="form-area">  
-				<form role="form" method="post" action="{% url 'stock_calculator' %}">{% csrf_token %}
-				<br style="clear:both">
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-symbol" name="symbol" placeholder="Symbol" required>
-						{% if form.symbol.errors %}
-						<div class="alert alert-danger"><strong>{{ form.symbol.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-allotment" name="allotment" placeholder="Allotment (# of shares)" required>
-						{% if form.allotment.errors %}
-						<div class="alert alert-danger"><strong>{{ form.allotment.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-fsp" name="final_share_price" placeholder="Final Share Price (dollars)" required>
-						{% if form.final_share_price.errors %}
-						<div class="alert alert-danger"><strong>{{ form.final_share_price.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-sc" name="sell_commission" placeholder="Sell Commission (dollars)" required>
-						{% if form.sell_commission.errors %}
-						<div class="alert alert-danger"><strong>{{ form.sell_commission.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-isp" name="initial_share_price" placeholder="Initial Share Price (dollars)" required>
-						{% if form.initial_share_price.errors %}
-						<div class="alert alert-danger"><strong>{{ form.initial_share_price.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-bc" name="buy_commission" placeholder="Buy Commission (dollars)" required>
-						{% if form.buy_commission.errors %}
-						<div class="alert alert-danger"><strong>{{ form.buy_commission.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-cgtr" name="capital_gain_tax_rate" placeholder="Capital Gain Tax Rate (%)" required>
-						{% if form.capital_gain_tax_rate.errors %}
-						<div class="alert alert-danger"><strong>{{ form.capital_gain_tax_rate.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<input type="submit" id="calculate" name="calculate" class="btn btn-primary pull-right" value="Calculate"/>
-				<br style="clear:both">
-				<br style="clear:both">
-				</form>
-			</div>
-			</div>
-		</div>
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		</div>
-	</div>
-</body>
-</html> -->
