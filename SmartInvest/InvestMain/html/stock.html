@@ -32,13 +32,16 @@
 
 
 <script type="text/javascript">
-	
+  
   $( "#trendsSelect" ).change(function(e) {
     var trend = e.currentTarget.value ||'';
     renderTrendGraph(trend)
   });
 
   function renderTrendGraph(trend=0){
+  	window.currentTrend = trend;
+  	window.currentStock = stocks_json[trend] || [];
+  	window.currentStockNum = stock_num_json[trend] || [];
     getStockData(window.stocks_json[trend],5, (data)=>{
     	
       var seriesOptions = [],
@@ -119,11 +122,18 @@
     if(!data[symbol]){
       return []
     }
+ 	var stockIndex = currentStock.findIndex(x=>symbol)
+ 	var stockCount = stockIndex>=0? currentStockNum[stockIndex]:0;
+
     return {
       'symbol': data[symbol].quote.symbol,
       'companyName':data[symbol].quote.companyName,
       'data': data[symbol].chart
-          .map(x=>([Date.parse(x.date),x.close||x.open]))
+          .map(x=>{
+          	var date = Date.parse(x.date);
+          	var value = x.close || x.open;
+          	return [date, value*stockCount]
+          })
           .splice(0,take)};
   }
   if(window.strategies.stocks){
