@@ -3,6 +3,11 @@
 {% load static %}
 
 {% block content %}
+<script type="text/javascript">
+    window.strategies_json = {{strategies_json|safe}}
+    window.stocks_json = {{stocks_json|safe}}
+    window.stock_num_json = {{stock_num_json|safe}}
+</script>
   <br /> <br /> <br /> <br />
   <div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Portfolio Weekly Trend</div>	
 <div class="container">
@@ -11,13 +16,121 @@
       <label class="input-group-text" for="trendsSelect">Trends</label>
     </div>
     <select class="custom-select" id="trendsSelect">
-      <option >Choose...</option>
       {% for option in strategies %}
-      	<option value="{{ forloop.counter0 }}">{{option}}</option>
+      	<option 
+      		value="{{ forloop.counter0 }}" 
+      		{% if forloop.counter0 == 0 %} 
+      		selected 
+			{% endif %}>
+		{{option}}
+		</option>
       {% endfor %}
     </select>
   </div>
   <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-  </div>
+ </div>
 
+
+<script type="text/javascript">
+	
+  $( "#trendsSelect" ).change(function(e) {
+    var trend = e.currentTarget.value ||'';
+    renderTrendGraph(trend)
+  });
+
+  function renderTrendGraph(trend=0){
+    getStockData(window.stocks_json[trend],5, (data)=>{
+    	
+      var seriesOptions = [],
+          seriesCounter = 0,
+          stocksNames = Object.keys(data);
+      stocksNames.forEach((name,i)=>{
+        var x = parseStockData(name,data);
+        seriesOptions[i] = {
+          name: x.companyName,
+          data: x.data
+        };
+      })
+      createChart(seriesOptions)
+    })
+  }
+  function getStockData(symbols=[], last=5, onSuccess){
+    const stockBaseUrl = 'https://api.iextrading.com/1.0';
+      if(symbols && symbols.length){
+      	
+        $.ajax({
+            dataType: 'json',
+            url: stockBaseUrl + '/stock/market/batch?symbols='+symbols.join(',')+'&types=quote,chart&range=1m&last='+last,
+            data: {},
+            success: (data)=>{
+              onSuccess && onSuccess(data);
+            }
+          });
+      }
+  }
+  function createChart(seriesOptions, title='') {
+
+    Highcharts.stockChart('container', {
+		title: {
+          text: title
+        },
+        rangeSelector: {
+            selected: 4
+        },
+
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                }
+            },
+            plotLines: [{
+                value: 0,
+                width: 2,
+                color: 'silver'
+            }]
+        },
+
+        plotOptions: {
+            series: {
+                compare: 'percent',
+                showInNavigator: true
+            }
+        },
+
+        tooltip: {
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+            valueDecimals: 2,
+            split: true
+        },
+
+        series: seriesOptions
+    });
+    hideHighChartExtras();
+  }
+  function hideHighChartExtras(){
+    $('.highcharts-label').hide();
+      $('.highcharts-range-selector-group').hide();
+      // $('.highcharts-xaxis-labels').hide();
+      // $('.highcharts-navigator').hide();
+      // $('.highcharts-scrollbar').hide();
+  }
+  function parseStockData(symbol='', data={}, take=5){
+    if(!data[symbol]){
+      return []
+    }
+    return {
+      'symbol': data[symbol].quote.symbol,
+      'companyName':data[symbol].quote.companyName,
+      'data': data[symbol].chart
+          .map(x=>([Date.parse(x.date),x.close||x.open]))
+          .splice(0,take)};
+  }
+  if(window.strategies.stocks){
+    renderTrendGraph();
+  }
+  function loadedStrategies(strategies){
+    renderTrendGraph()
+  }
+</script>
 {% endblock %}
