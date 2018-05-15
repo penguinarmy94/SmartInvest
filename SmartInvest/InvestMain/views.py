@@ -159,15 +159,17 @@ def portfolio_trend(request):
 		# Check if the user wants to see the trends
 		if (request.method == "GET"):
 			try:
-				data = Strategy.objects.filter(request.user)
+				data = Strategy.objects.filter(userid=request.user)
 				strategies = []
 				stocks = []
 				stock_count = []
 				
 				for strat in data:
 					shares = []
+					initial_stocks = []
 					strategies.append(strat.name)
-					stocks.append(get_stocks(strat))
+					initial_stocks = get_stocks(strat)
+					stocks.append([initial_stocks[0].name, initial_stocks[1].name, initial_stocks[2].name])
 					shares.append(strat.number_of_stocks_1)
 					shares.append(strat.number_of_stocks_2)
 					shares.append(strat.number_of_stocks_3)

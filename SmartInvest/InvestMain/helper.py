@@ -2,6 +2,7 @@ import requests, datetime, time, socket, os, json
 from myproject import settings
 from InvestMain.models import Strategy
 from InvestMain.classes import Stock
+from django.shortcuts import render, redirect
 
 __file = open(os.path.join(settings.BASE_DIR,'static/json/strategies.json'))
 __strategy_json = json.load(__file)
@@ -116,6 +117,7 @@ def get_stocks(strategy):
 		
 	return stocks
 
+
 """
 	Updates the strategies that the user has already invested in
 """
@@ -199,13 +201,13 @@ def check_connection(hosts):
 """
 def fetch_data_api(host, extension, ticker_symbol):
     try:
-        result = requests.get(host + "/" + ticker_symbol + extension, timeout=1)
+        result = requests.get(host + "/" + ticker_symbol + extension, timeout=8)
         if result.text == "Unknown symbol":
             return 0
         return result.json()["quote"]
     except (requests.exceptions.ReadTimeout, requests.exceptions.HTTPError, requests.exceptions.InvalidURL):
-        print("Count not fetch the data from the API Server. We will return momentarily")
-        exit(1)
+        print("Could not fetch the data from the API Server. We will return momentarily")
+        return redirect("/")
 
 
 """
