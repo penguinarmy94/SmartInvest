@@ -24,8 +24,8 @@ teamsCards = [
 },
 {
 'title':'Lalini Wudali',
-'backText':'',
-'img':'/img/SmartInvest.jpg'
+'backText':'I work as a Technical Program Manager for an EMR (Electronic Medical Records) project at a Home Health care company. In my free time, I love to spend time with my family and sing Indian classical music',
+'img':'/img/lalini_wudali.jpeg'
 },
 {
 'title':'Arturo Montoya',
