@@ -3,12 +3,31 @@
 {% load static %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+  <link rel="stylesheet" href="{% static 'css/cover.css' %}">
 {% endblock %}
 
 {% block content %}
+  <link rel="stylesheet" href="{% static 'css/cover.css' %}">
+
 <br /> <br /> <br /> <br />
-<div class="container">
-	About
+<div class="container text-white">
+
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      
+
+      <main role="main" class="inner cover">
+        <h1 class="cover-heading text-center">Product Features</h1>
+        <ul class="lead">
+			<li><h4>Input dollar amount to invest</h4></li>
+			<li><h4>Invest in one or more investment strategies</h4></li>
+			<li><h4>Assigns stocks for a selected investment strategy</h4></li>
+			<li><h4>Each strategy maps to at least three different stocks</h4></li>
+			<li><h4>Shows how the money is divided to buy the suggested stock</h4></li>
+			<li><h4>Shows the current values of the overall portfolio</h4></li>
+			<li><h4>A weekly trend of the portfolio value</h4></li>
+			<li><h4>5 days history of the overall portfolio value</h4></li>
+        </ul>
+      </main>
+    </div>
 </div>
 {% endblock %}
