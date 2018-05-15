@@ -30,6 +30,8 @@ urlpatterns = [
     url(r'^trends/', views.trends, name='trends'),
     url(r'^about/', views.about, name='about'),
     url(r'^team/', views.team, name='team'),
+    url(r'^services/', views.services, name='services'),
+
     path('', include('InvestMain.urls')),
     
 ]
