@@ -14,8 +14,8 @@ linksCards = [
 teamsCards = [
 {
 'title':'Marianne Paulson',
-'backText':'',
-'img':'/img/SmartInvest.jpg'
+'backText':' I am a Software Engineer at Lawrence Livermore National Laboratory and love the field of Software Engineering. On my free time I like to hang out with my family and occationally explore my endurance limits on all the beautiful trails California has to offer.',
+'img':'/img/marianne_paulson.jpg'
 },
 {
 'title':'Luis Otero',
