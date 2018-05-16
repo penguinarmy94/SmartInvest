@@ -8,7 +8,15 @@
 
 {% block content %}
   <br /> <br /> <br /> <br />
+ <script type="text/javascript">
+    window.strategies_json = {{strategies_json|safe}}
+    window.stocks_json = {{stocks_json|safe}}
+    window.stock_num_json = {{stock_num_json|safe}}
+</script>
 <div class="container">
+<div class="row">
+<div class="container">
+<div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Stocks Weekly Trend</div>
   <div class="input-group mb-3">
     <div class="input-group-prepend">
       <label class="input-group-text" for="trendsSelect">Trends</label>
@@ -24,14 +32,149 @@
   </div>
   <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
   </div>
-
+</div>
+  <br /> <br /> <br /> <br />
+{% if strategies %}
+<div class="row">	
+<div class="container">
+<div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Portfolio Weekly Trend</div>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="trendsPortfolioSelect">Trends</label>
+    </div>
+    <select class="custom-select" id="trendsPortfolioSelect">
+      {% for option in strategies %}
+      	<option 
+      		value="{{ forloop.counter0 }}" 
+      		{% if forloop.counter0 == 0 %} 
+      		selected 
+			{% endif %}>
+		{{option}}
+		</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div id="container2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+ </div>
+</div>
+{% endif %}
+</div>
 
 <script type="text/javascript">
+  
+  $( "#trendsPortfolioSelect" ).change(function(e) {
+    var trend = e.currentTarget.value ||'';
+    renderTrendsGraph(trend)
+  });
   
   $( "#trendsSelect" ).change(function(e) {
     var trend = e.currentTarget.value ||'';
     renderTrendGraph(trend)
   });
+  
+
+  function renderTrendsGraph(trend=0){
+  	window.currentTrend = trend;
+  	window.currentStock = stocks_json[trend] || [];
+  	window.currentStockNum = stock_num_json[trend] || [];
+    getStocksData(window.stocks_json[trend],5, (data)=>{
+    	
+      var seriesOptions = [],
+          seriesCounter = 0,
+          stocksNames = Object.keys(data);
+      stocksNames.forEach((name,i)=>{
+        var x = parseStocksData(name,data);
+        seriesOptions[i] = {
+          name: x.companyName,
+          data: x.data
+        };
+      })
+      createsChart(seriesOptions)
+    })
+  }
+  function getStocksData(symbols=[], last=5, onSuccess){
+    const stockBaseUrl = 'https://api.iextrading.com/1.0';
+      if(symbols && symbols.length){
+      	
+        $.ajax({
+            dataType: 'json',
+            url: stockBaseUrl + '/stock/market/batch?symbols='+symbols.join(',')+'&types=quote,chart&range=1m&last='+10,
+            data: {},
+            success: (data)=>{
+              onSuccess && onSuccess(data);
+            }
+          });
+      }
+  }
+  function createsChart(seriesOptions, title='') {
+
+    Highcharts.stockChart('container2', {
+		title: {
+          text: title
+        },
+        rangeSelector: {
+            selected: 4
+        },
+
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                }
+            },
+            plotLines: [{
+                value: 0,
+                width: 2,
+                color: 'silver'
+            }]
+        },
+
+        plotOptions: {
+            series: {
+                compare: 'percent',
+                showInNavigator: true
+            }
+        },
+
+        tooltip: {
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>${point.y}</b> ({point.change}%)<br/>',
+            valueDecimals: 2,
+            split: true
+        },
+
+        series: seriesOptions
+    });
+    hideHighChartsExtras();
+  }
+  function hideHighChartsExtras(){
+    $('.highcharts-label').hide();
+      $('.highcharts-range-selector-group').hide();
+      // $('.highcharts-xaxis-labels').hide();
+      // $('.highcharts-navigator').hide();
+      // $('.highcharts-scrollbar').hide();
+  }
+  function parseStocksData(symbol='', data={}, take=5){
+    if(!data[symbol]){
+      return []
+    }
+ 	var stockIndex = currentStock.findIndex(x=>symbol)
+ 	var stockCount = stockIndex>=0? currentStockNum[stockIndex]:0;
+
+    return {
+      'symbol': data[symbol].quote.symbol,
+      'companyName':data[symbol].quote.companyName,
+      'data': data[symbol].chart
+          .map(x=>{
+          	var date = Date.parse(x.date);
+          	var value = x.close || x.open;
+          	return [date, value*stockCount]
+          })
+          .splice(0,take)};
+  }
+  
+  if(window.strategies.stocks){
+    renderTrendsGraph();
+  }
 
   function renderTrendGraph(trend='ethical_invest'){
     var stocks = window.strategies.stocks;
@@ -91,7 +234,7 @@
         },
 
         tooltip: {
-            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>${point.y}</b> ({point.change}%)<br/>',
             valueDecimals: 2,
             split: true
         },
@@ -142,12 +285,14 @@
           .map(x=>([Date.parse(x.date),x.close||x.open]))
           .splice(0,take)};
   }
+  
   if(window.strategies.stocks){
     renderTrendGraph();
   }
+  
   function loadedStrategies(strategies){
     renderTrendGraph()
+    renderTrendsGraph()
   }
 </script>
-
 {% endblock %}

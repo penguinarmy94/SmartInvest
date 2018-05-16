@@ -11,8 +11,6 @@ teamsCards = __loader['teamsCards']
 
 def home(request):
     return render(request, 'home.html',{'cards':linksCards})
-def trends(request):
-    return render(request, 'trends.html')
 def about(request):
     return render(request, 'about.html')
 def team(request):

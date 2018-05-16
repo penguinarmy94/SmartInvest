@@ -174,36 +174,8 @@ def portfolio_trend(request):
 					shares.append(strat.number_of_stocks_2)
 					shares.append(strat.number_of_stocks_3)
 					stock_count.append(shares)
-				
-				
-				"""
-					strategies = [ 
-							"Ethical Investment", 	# Only if user has invested in this strategy
-							"Growth Investment", 	# Only if the user has invested in this strategy
-							"Index Investment", 	# Only if user has invested in this strategy
-							"Quality Investment",	# Only if user has invested in this strategy
-							"Value Investment"	# Only if user has invested in this strategy
-					]
 					
-					stocks = [
-							["stock1", "stock2", "stock3"],	# Ethical Investment (if user has invested here)
-							["stock1", "stock2", "stock3"],	# Growth Investment (if user has invested here)
-							["stock1", "stock2", "stock3"],	# Index Investment (if user has invested here)
-							["stock1", "stock2", "stock3"],	# Quality Investment (if user has invested here)
-							["stock1", "stock2", "stock3"]	# Value Investment (if user has invested here)	
-					]
-					
-					stock_num = [
-							[1, 2, 3],	# Allotment in each of the stocks for Ethical Investment
-							[4, 7, 9],	# Allotment in each of the stocks for Growth Investment
-							[17,90,21],	# Allotment in each of the stocks for Index Investment
-							[33,56,16],	# Allotment in each of the stocks for Quality Investment
-							[45,67,88]	# Allotment in each of the stocks for Value Investment
-					]
-				
-				"""
-					
-				return render(request, 'stock.html', {
+				return render(request, 'trends.html', {
 					"strategies": strategies, "strategies_json":json.dumps(strategies),
 					"stocks": stocks, "stocks_json":json.dumps(stocks),
 					"stock_num": stock_count, "stock_num_json":json.dumps(stock_count)
