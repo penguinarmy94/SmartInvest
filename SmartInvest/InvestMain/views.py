@@ -169,7 +169,7 @@ def portfolio_trend(request):
 					initial_stocks = []
 					strategies.append(strat.name)
 					initial_stocks = get_stocks(strat)
-					stocks.append([initial_stocks[0].name, initial_stocks[1].name, initial_stocks[2].name])
+					stocks.append([initial_stocks[0].symbol, initial_stocks[1].symbol, initial_stocks[2].symbol])
 					shares.append(strat.number_of_stocks_1)
 					shares.append(strat.number_of_stocks_2)
 					shares.append(strat.number_of_stocks_3)
@@ -203,7 +203,11 @@ def portfolio_trend(request):
 				
 				"""
 					
-				return render(request, 'stock.html', {"strategies": strategies, "stocks": stocks, "stock_num": stock_count})
+				return render(request, 'stock.html', {
+					"strategies": strategies, "strategies_json":json.dumps(strategies),
+					"stocks": stocks, "stocks_json":json.dumps(stocks),
+					"stock_num": stock_count, "stock_num_json":json.dumps(stock_count)
+					})
 			except ObjectDoesNotExist:
 				return redirect("/")
 			

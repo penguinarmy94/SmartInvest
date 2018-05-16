@@ -3,100 +3,144 @@
 {% load static %}
 
 {% block content %}
-<br />
-<br />
-<div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Portfolio Weekly Trend</div>	
-	<div class="container-fluid">
-		<div class="row">
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		<div class="col-md-10" style="background-color: #00FFFF">
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-				{{ strategies }}
-			</div>
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-				{{ stocks }}
-			</div>
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-				{{ stock_num }}
-			</div>
-		</div>
-		</div>
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		</div>
-	</div>
+<script type="text/javascript">
+    window.strategies_json = {{strategies_json|safe}}
+    window.stocks_json = {{stocks_json|safe}}
+    window.stock_num_json = {{stock_num_json|safe}}
+</script>
+  <br /> <br /> <br /> <br />
+  <div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Portfolio Weekly Trend</div>	
+<div class="container">
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="trendsSelect">Trends</label>
+    </div>
+    <select class="custom-select" id="trendsSelect">
+      {% for option in strategies %}
+      	<option 
+      		value="{{ forloop.counter0 }}" 
+      		{% if forloop.counter0 == 0 %} 
+      		selected 
+			{% endif %}>
+		{{option}}
+		</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+ </div>
 
+
+<script type="text/javascript">
+  
+  $( "#trendsSelect" ).change(function(e) {
+    var trend = e.currentTarget.value ||'';
+    renderTrendGraph(trend)
+  });
+
+  function renderTrendGraph(trend=0){
+  	window.currentTrend = trend;
+  	window.currentStock = stocks_json[trend] || [];
+  	window.currentStockNum = stock_num_json[trend] || [];
+    getStockData(window.stocks_json[trend],5, (data)=>{
+    	
+      var seriesOptions = [],
+          seriesCounter = 0,
+          stocksNames = Object.keys(data);
+      stocksNames.forEach((name,i)=>{
+        var x = parseStockData(name,data);
+        seriesOptions[i] = {
+          name: x.companyName,
+          data: x.data
+        };
+      })
+      createChart(seriesOptions)
+    })
+  }
+  function getStockData(symbols=[], last=5, onSuccess){
+    const stockBaseUrl = 'https://api.iextrading.com/1.0';
+      if(symbols && symbols.length){
+      	
+        $.ajax({
+            dataType: 'json',
+            url: stockBaseUrl + '/stock/market/batch?symbols='+symbols.join(',')+'&types=quote,chart&range=1m&last='+last,
+            data: {},
+            success: (data)=>{
+              onSuccess && onSuccess(data);
+            }
+          });
+      }
+  }
+  function createChart(seriesOptions, title='') {
+
+    Highcharts.stockChart('container', {
+		title: {
+          text: title
+        },
+        rangeSelector: {
+            selected: 4
+        },
+
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                }
+            },
+            plotLines: [{
+                value: 0,
+                width: 2,
+                color: 'silver'
+            }]
+        },
+
+        plotOptions: {
+            series: {
+                compare: 'percent',
+                showInNavigator: true
+            }
+        },
+
+        tooltip: {
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+            valueDecimals: 2,
+            split: true
+        },
+
+        series: seriesOptions
+    });
+    hideHighChartExtras();
+  }
+  function hideHighChartExtras(){
+    $('.highcharts-label').hide();
+      $('.highcharts-range-selector-group').hide();
+      // $('.highcharts-xaxis-labels').hide();
+      // $('.highcharts-navigator').hide();
+      // $('.highcharts-scrollbar').hide();
+  }
+  function parseStockData(symbol='', data={}, take=5){
+    if(!data[symbol]){
+      return []
+    }
+ 	var stockIndex = currentStock.findIndex(x=>symbol)
+ 	var stockCount = stockIndex>=0? currentStockNum[stockIndex]:0;
+
+    return {
+      'symbol': data[symbol].quote.symbol,
+      'companyName':data[symbol].quote.companyName,
+      'data': data[symbol].chart
+          .map(x=>{
+          	var date = Date.parse(x.date);
+          	var value = x.close || x.open;
+          	return [date, value*stockCount]
+          })
+          .splice(0,take)};
+  }
+  if(window.strategies.stocks){
+    renderTrendGraph();
+  }
+  function loadedStrategies(strategies){
+    renderTrendGraph()
+  }
+</script>
 {% endblock %}
-<!-- 
-<!DOCTYPE>
-<html>
-<header>
-	{% load static %}
-	<link href="{% static '/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" id="bootstrap-css">
-	<script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
-	<style> .h1 { margin-bottom: 0%; padding-bottom: 2%; padding-top: 2%; margin-left: auto; margin-right: auto; }</style>
-	<title>SmartInvest - Stock Calculator</title>
-</header>
-<body style="background-color: black">
-	<div class="h1" align="center" style="background-color: black; color: white;" >SmartInvest: Stock Calculator</div>	
-	<div class="container-fluid">
-		<div class="row">
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		<div class="col-md-10" style="background-color: #00FFFF">
-			<div class="col-md-5" align="center" style="margin-top: 1%; margin-left: auto; margin-right: auto; background: rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;">
-			<div class="form-area">  
-				<form role="form" method="post" action="{% url 'stock_calculator' %}">{% csrf_token %}
-				<br style="clear:both">
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-symbol" name="symbol" placeholder="Symbol" required>
-						{% if form.symbol.errors %}
-						<div class="alert alert-danger"><strong>{{ form.symbol.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-allotment" name="allotment" placeholder="Allotment (# of shares)" required>
-						{% if form.allotment.errors %}
-						<div class="alert alert-danger"><strong>{{ form.allotment.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-fsp" name="final_share_price" placeholder="Final Share Price (dollars)" required>
-						{% if form.final_share_price.errors %}
-						<div class="alert alert-danger"><strong>{{ form.final_share_price.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-sc" name="sell_commission" placeholder="Sell Commission (dollars)" required>
-						{% if form.sell_commission.errors %}
-						<div class="alert alert-danger"><strong>{{ form.sell_commission.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-isp" name="initial_share_price" placeholder="Initial Share Price (dollars)" required>
-						{% if form.initial_share_price.errors %}
-						<div class="alert alert-danger"><strong>{{ form.initial_share_price.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-bc" name="buy_commission" placeholder="Buy Commission (dollars)" required>
-						{% if form.buy_commission.errors %}
-						<div class="alert alert-danger"><strong>{{ form.buy_commission.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" id="stock-cgtr" name="capital_gain_tax_rate" placeholder="Capital Gain Tax Rate (%)" required>
-						{% if form.capital_gain_tax_rate.errors %}
-						<div class="alert alert-danger"><strong>{{ form.capital_gain_tax_rate.errors }}</strong></div>
-						{% endif %}
-					</div>
-					<input type="submit" id="calculate" name="calculate" class="btn btn-primary pull-right" value="Calculate"/>
-				<br style="clear:both">
-				<br style="clear:both">
-				</form>
-			</div>
-			</div>
-		</div>
-		<div class="col-md-1" style="background-color: #00FF00"></div>
-		</div>
-	</div>
-</body>
-</html> -->

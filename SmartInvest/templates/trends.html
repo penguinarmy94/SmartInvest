@@ -127,9 +127,9 @@
   function hideHighChartExtras(){
     $('.highcharts-label').hide();
       $('.highcharts-range-selector-group').hide();
-      $('.highcharts-xaxis-labels').hide();
-      $('.highcharts-navigator').hide();
-      $('.highcharts-scrollbar').hide();
+      // $('.highcharts-xaxis-labels').hide();
+      // $('.highcharts-navigator').hide();
+      // $('.highcharts-scrollbar').hide();
   }
   function parseStockData(symbol='', data={}, take=5){
     if(!data[symbol]){
@@ -139,7 +139,7 @@
       'symbol': data[symbol].quote.symbol,
       'companyName':data[symbol].quote.companyName,
       'data': data[symbol].chart
-          .map(x=>([x.date,x.close||x.open]))
+          .map(x=>([Date.parse(x.date),x.close||x.open]))
           .splice(0,take)};
   }
   if(window.strategies.stocks){
