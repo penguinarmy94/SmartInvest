@@ -17,22 +17,26 @@
 		{
 			"header":"Invest",
 			"body":"",
-			"src":"/invest"
+			"src":"/invest",
+			"img":"/img/invest.jpg"
 		},
 		{
 			"header":"Portfolio",
 			"body":"",
-			"src":"/portfolio"
+			"src":"/portfolio",
+			"img":"/img/portfolio.jpg"
 		},
 		{
 			"header":"Trends",
 			"body":"",
-			"src":"/trends"
+			"src":"/trends",
+			"img":"/img/trends.jpg"
 		},
 		{
 			"header":"About",
 			"body":"",
-			"src":"/about"
+			"src":"/about",
+			"img":"/img/sjsu.png"
 		}
 	],
 	"teamsCards": [
@@ -48,8 +52,8 @@
 		},
 		{
 			"title":"Lalini Wudali",
-			"backText":"",
-			"img":"/img/SmartInvest.jpg"
+			"backText":"I work as a Technical Program Manager for an EMR (Electronic Medical Records) project at a Home Health care company. In my free time, I love to spend time with my family and sing Indian classical music",
+			"img":"/img/lalini_wudali.jpeg"
 		},
 		{
 			"title":"Arturo Montoya",

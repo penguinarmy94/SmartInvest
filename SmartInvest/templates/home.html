@@ -11,11 +11,14 @@
 <div class="container">
 	<div class="card-deck mb-3 text-center">
 	{% for item in cards %}
-		<div data-href="{{item.src}}" class="card mb-4 box-shadow card-href" style="min-width: 30rem;max-width: 50rem;margin:5px;min-height: 18rem;">
+		<div data-href="{{item.src}}" class="card mb-4 box-shadow card-href" style="min-width: 30rem;max-width: 50rem;margin:5px;min-height: 18rem;max-height: 30rem;">
 			{% if item.header %}
 				<div class="card-header">
 				<h4 class="my-0 font-weight-normal">{{ item.header }}</h4>
 				</div>
+			{% endif %}
+			{% if item.img %}
+			  <img class="card-img-top" src="{% static item.img %}" alt="Card image cap">
 			{% endif %}
 			<div class="card-body">
 				{% if item.bodyHeader %}
