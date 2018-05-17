@@ -86,7 +86,7 @@ def stock_portfolio(request):
 			return redirect("/invest")
 	else:
 		# Not a get request, redirect to signin page
-		return redirect("/signin")
+		return redirect("/login")
 	
 """
 	Shows investment options for the user to invest in
@@ -149,7 +149,7 @@ def stock_invest_options(request):
 		else:
 			return redirect("/")
 	else:
-		return redirect("/signin")
+		return redirect("/login")
 		
 """ Possible route for portfolio trend """
 def portfolio_trend(request):
@@ -187,5 +187,5 @@ def portfolio_trend(request):
 		else:
 			return redirect("/")
 	else:
-		return redirect("/signin")
+		return redirect("/login")
 				
