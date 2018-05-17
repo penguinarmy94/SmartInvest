@@ -8,37 +8,57 @@
 
 {% block content %}
   <link rel="stylesheet" href="{% static 'css/cover.css' %}">
+  <link rel="stylesheet" href="{% static 'css/cards.css' %}">
 
-<br /> <br /> <br /> <br />
-<div class="container text-white">
-
-<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
-      
-
-      <main role="main" class="inner cover">
-	<ul class="nav nav-tabs">
-	<li class="nav-item">
-		<a class="nav-link active" href="#fire">Products</a>
-	</li>
-	<li class="nav-time">
-		<a class="nav-link" href="/team">Team</a>
-	</li>
-	</ul>
-        <h1 class="cover-heading text-center">Product Features</h1>
-        <ul class="lead" id="fire">
-			<li><h4>Input dollar amount to invest</h4></li>
-			<li><h4>Invest in one or more investment strategies</h4></li>
-			<li><h4>Assigns stocks for a selected investment strategy</h4></li>
-			<li><h4>Each strategy maps to at least three different stocks</h4></li>
-			<li><h4>Shows how the money is divided to buy the suggested stock</h4></li>
-			<li><h4>Shows the current values of the overall portfolio</h4></li>
-			<li><h4>A weekly trend of the portfolio value</h4></li>
-			<li><h4>5 days history of the overall portfolio value</h4></li>
-        </ul>
-	<ul class="lead" id="water">
-		<li><h4>Input dollar amount to invest</h4></li>
-	</ul>
-      </main>
-    </div>
+<div class="container text-black border border-secondary rounded" style="background-color: white; margin-bottom: 2%; margin-top: 8%;">
+	<div class="row">
+		<div class="cover-container d-flex h-100 p-3 mx-auto flex-column border" style="margin-top: 2%;">
+		      <main role="main" class="inner cover">
+			<ul class="lead" id="about">
+					 <h1 class="cover-heading text-center">Product Features</h1>
+					<li><h4>Input dollar amount to invest</h4></li>
+					<li><h4>Invest in one or more investment strategies</h4></li>
+					<li><h4>Assigns stocks for a selected investment strategy</h4></li>
+					<li><h4>Each strategy maps to at least three different stocks</h4></li>
+					<li><h4>Shows how the money is divided to buy the suggested stock</h4></li>
+					<li><h4>Shows the current values of the overall portfolio</h4></li>
+					<li><h4>A weekly trend of the portfolio value</h4></li>
+					<li><h4>5 days history of the overall portfolio value</h4></li>
+			</ul>
+		      </main>
+		</div>
+	</div>
+	<section id="team" class="container-fluid">
+	    <div class="container">
+		<h5 class="section-title h1">OUR TEAM</h5>
+		<div class="row">
+			{% for item in cards %}
+			    <div class="col-xs-12 col-sm-6 col-lg-3">
+				<div class="image-flip" ontouchstart="this.classList.toggle('hover');">
+				    <div class="mainflip">
+					<div class="frontside">
+					    <div class="card">
+						<div class="card-body text-center">
+						    <p><img class="img-fluid" src="{% static item.img %}" alt="card image"></p>
+						    <h4 class="card-title">{{ item.title }}</h4>
+						    <p class="card-text">{{ item.text }}</p>
+						</div>
+					    </div>
+					</div>
+					<div class="backside">
+					    <div class="card">
+						<div class="card-body text-center mt-4">
+						    <h4 class="card-title">{{ item.title }}</h4>
+						    <p class="card-text">{{ item.backText }}</p>
+						</div>
+					    </div>
+					</div>
+				    </div>
+				</div>
+			    </div>
+			{% endfor %}
+		</div>
+	    </div>
+	</section>
 </div>
 {% endblock %}

@@ -11,9 +11,9 @@ teamsCards = __loader['teamsCards']
 
 def home(request):
     return render(request, 'home.html',{'cards':linksCards})
-def about(request):
-    return render(request, 'about.html')
 def team(request):
-    return render(request, 'team.html',{'cards':teamsCards})
+    return render(request, 'about.html')
+def about(request):
+    return render(request, 'about.html',{'cards':teamsCards})
 def services(request):
     return render(request, 'services.html')
