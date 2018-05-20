@@ -89,6 +89,7 @@
           data: x.data
         };
       })
+      createChart()
       createsChart(seriesOptions)
     })
   }
@@ -107,7 +108,11 @@
       }
   }
   function createsChart(seriesOptions, title='') {
-
+    if(!seriesOptions){
+        seriesOptions=  window.rerenderDataContainer2;
+    } else {
+      window.rerenderDataContainer2 = seriesOptions;
+    }
     Highcharts.stockChart('container2', {
 		title: {
           text: title
@@ -159,17 +164,17 @@
     }
  	var stockIndex = currentStock.findIndex(x=>symbol)
  	var stockCount = stockIndex>=0? currentStockNum[stockIndex]:0;
-
+ var list = data[symbol].chart;
     return {
       'symbol': data[symbol].quote.symbol,
       'companyName':data[symbol].quote.companyName,
-      'data': data[symbol].chart
+      'data': list
           .map(x=>{
-          	var date = Date.parse(x.date);
+          	var date = Date.parse(parseDate(x.date));
           	var value = x.close || x.open;
           	return [date, value*stockCount]
           })
-          .splice(data[symbol].chart.length - take,data[symbol].chart.length)};
+          .splice(list.length-take,list.length)};
   }
   
   if(window.strategies.stocks){
@@ -189,6 +194,7 @@
           data: x.data
         };
       })
+      createsChart()
       createChart(seriesOptions)
     })
   }
@@ -206,7 +212,11 @@
       }
   }
   function createChart(seriesOptions) {
-
+    if(!seriesOptions){
+        seriesOptions=  window.rerenderDataContainer;
+    } else {
+      window.rerenderDataContainer = seriesOptions;
+    }
     Highcharts.stockChart('container', {
 
         rangeSelector: {
@@ -225,20 +235,17 @@
                 color: 'silver'
             }]
         },
-
         plotOptions: {
             series: {
                 compare: 'percent',
                 showInNavigator: true
             }
         },
-
         tooltip: {
             pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>${point.y}</b> ({point.change}%)<br/>',
             valueDecimals: 2,
             split: true
         },
-
         series: seriesOptions
     });
     hideHighChartExtras();
@@ -278,12 +285,14 @@
     if(!data[symbol]){
       return []
     }
+    var quote = data[symbol].quote;
+    var list = data[symbol].chart;
     return {
-      'symbol': data[symbol].quote.symbol,
-      'companyName':data[symbol].quote.companyName,
-      'data': data[symbol].chart
-          .map(x=>([Date.parse(x.date),x.close||x.open]))
-          .splice(data[symbol].chart.length - take,data[symbol].chart.length)};
+      'symbol': quote.symbol,
+      'companyName':quote.companyName,
+      'data': list
+          .map(x=>([Date.parse(parseDate(x.date)),x.close||x.open,x.date]))
+          .splice(list.length-take,list.length)};
   }
   
   if(window.strategies.stocks){
@@ -293,6 +302,10 @@
   function loadedStrategies(strategies){
     renderTrendGraph()
     renderTrendsGraph()
+  }
+  function parseDate(input) {
+    var parts = input.split('-');
+    return new Date(parts[0], parts[1]-1, parts[2]);
   }
 </script>
 {% endblock %}
