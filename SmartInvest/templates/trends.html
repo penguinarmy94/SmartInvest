@@ -77,7 +77,7 @@
   	window.currentTrend = trend;
   	window.currentStock = stocks_json[trend] || [];
   	window.currentStockNum = stock_num_json[trend] || [];
-    getStocksData(window.stocks_json[trend],5, (data)=>{
+    getStocksData(window.stocks_json[trend],7, (data)=>{
     	
       var seriesOptions = [],
           seriesCounter = 0,
@@ -92,13 +92,13 @@
       createsChart(seriesOptions)
     })
   }
-  function getStocksData(symbols=[], last=5, onSuccess){
+  function getStocksData(symbols=[], last=7, onSuccess){
     const stockBaseUrl = 'https://api.iextrading.com/1.0';
       if(symbols && symbols.length){
       	
         $.ajax({
             dataType: 'json',
-            url: stockBaseUrl + '/stock/market/batch?symbols='+symbols.join(',')+'&types=quote,chart&range=1m&last='+10,
+            url: stockBaseUrl + '/stock/market/batch?symbols='+symbols.join(',')+'&types=quote,chart&range=1m&last='+last,
             data: {},
             success: (data)=>{
               onSuccess && onSuccess(data);
@@ -153,7 +153,7 @@
       // $('.highcharts-navigator').hide();
       // $('.highcharts-scrollbar').hide();
   }
-  function parseStocksData(symbol='', data={}, take=5){
+  function parseStocksData(symbol='', data={}, take=7){
     if(!data[symbol]){
       return []
     }
@@ -169,7 +169,7 @@
           	var value = x.close || x.open;
           	return [date, value*stockCount]
           })
-          .splice(0,take)};
+          .splice(data[symbol].chart.length - take,data[symbol].chart.length)};
   }
   
   if(window.strategies.stocks){
@@ -178,7 +178,7 @@
 
   function renderTrendGraph(trend='ethical_invest'){
     var stocks = window.strategies.stocks;
-    getStockData(stocks[trend],5, (data)=>{
+    getStockData(stocks[trend],7, (data)=>{
       var seriesOptions = [],
           seriesCounter = 0,
           stocksNames = Object.keys(data);
@@ -192,7 +192,7 @@
       createChart(seriesOptions)
     })
   }
-  function getStockData(symbols=[], last=5, onSuccess){
+  function getStockData(symbols=[], last=7, onSuccess){
     const stockBaseUrl = 'https://api.iextrading.com/1.0';
       if(symbols && symbols.length){
         $.ajax({
@@ -274,7 +274,7 @@
       // $('.highcharts-navigator').hide();
       // $('.highcharts-scrollbar').hide();
   }
-  function parseStockData(symbol='', data={}, take=5){
+  function parseStockData(symbol='', data={}, take=7){
     if(!data[symbol]){
       return []
     }
@@ -283,7 +283,7 @@
       'companyName':data[symbol].quote.companyName,
       'data': data[symbol].chart
           .map(x=>([Date.parse(x.date),x.close||x.open]))
-          .splice(0,take)};
+          .splice(data[symbol].chart.length - take,data[symbol].chart.length)};
   }
   
   if(window.strategies.stocks){
