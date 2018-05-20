@@ -89,6 +89,7 @@
           data: x.data
         };
       })
+      createChart()
       createsChart(seriesOptions)
     })
   }
@@ -107,7 +108,11 @@
       }
   }
   function createsChart(seriesOptions, title='') {
-
+    if(!seriesOptions){
+        seriesOptions=  window.rerenderDataContainer2;
+    } else {
+      window.rerenderDataContainer2 = seriesOptions;
+    }
     Highcharts.stockChart('container2', {
 		title: {
           text: title
@@ -189,6 +194,7 @@
           data: x.data
         };
       })
+      createsChart()
       createChart(seriesOptions)
     })
   }
@@ -206,7 +212,11 @@
       }
   }
   function createChart(seriesOptions) {
-
+    if(!seriesOptions){
+        seriesOptions=  window.rerenderDataContainer;
+    } else {
+      window.rerenderDataContainer = seriesOptions;
+    }
     Highcharts.stockChart('container', {
 
         rangeSelector: {
