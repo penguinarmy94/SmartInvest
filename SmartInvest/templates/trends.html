@@ -98,7 +98,7 @@
       	
         $.ajax({
             dataType: 'json',
-            url: stockBaseUrl + '/stock/market/batch?symbols='+symbols.join(',')+'&types=quote,chart&range=1m&last='+10,
+            url: stockBaseUrl + '/stock/market/batch?symbols='+symbols.join(',')+'&types=quote,chart&range=1m&last='+last,
             data: {},
             success: (data)=>{
               onSuccess && onSuccess(data);
@@ -159,17 +159,17 @@
     }
  	var stockIndex = currentStock.findIndex(x=>symbol)
  	var stockCount = stockIndex>=0? currentStockNum[stockIndex]:0;
-
+ var list = data[symbol].chart;
     return {
       'symbol': data[symbol].quote.symbol,
       'companyName':data[symbol].quote.companyName,
-      'data': data[symbol].chart
+      'data': list
           .map(x=>{
-          	var date = Date.parse(x.date);
+          	var date = Date.parse(parseDate(x.date));
           	var value = x.close || x.open;
           	return [date, value*stockCount]
           })
-          .splice(0,take)};
+          .splice(list.length-take,list.length)};
   }
   
   if(window.strategies.stocks){
