@@ -9,7 +9,7 @@ certifi==2018.1.18
 cffi==1.11.5
 chardet==3.0.4
 colorama==0.3.7
-cryptography==2.2.2
+cryptography==2.3.0
 Django==2.0.4
 django-bootstrap4==0.0.6
 django-widget-tweaks==1.4.2
