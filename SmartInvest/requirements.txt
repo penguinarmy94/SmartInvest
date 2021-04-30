@@ -36,7 +36,7 @@ python-firebase==1.2
 pytz==2018.4
 PyYAML==4.2b1
 requests==2.20.0
-rsa==3.4.2
+rsa==4.7
 s3transfer==0.1.13
 six==1.11.0
 speedtest-cli==2.0.0
