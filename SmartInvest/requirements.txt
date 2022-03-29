@@ -22,7 +22,7 @@ idna==2.6
 iso-639==0.4.5
 iso3166==0.8
 jmespath==0.9.3
-paramiko==2.4.2
+paramiko==2.10.1
 pipenv==11.10.1
 prettytable==0.7.2
 pyasn1==0.4.2
